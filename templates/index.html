@@ -44,16 +44,65 @@
       <div class="g-col-12 text-center offset-1">
         <button id="btnSubmit" class="btn btn-primary">Submit</button>
       </div>
+      <div class="g-col-6 g-col-md-4">
+        <input
+          id="Id"
+          type="number"
+          class="form-control"
+          placeholder="enter id"
+        />
+      </div>
+      <div class="g-col-6 g-col-md-4">
+        <input
+          id="amount"
+          class="form-control"
+          type="number"
+          placeholder="enter bank name"
+        />
+      </div>
+      <div class="g-col-6 g-col-md-4">
+        <input
+          type="text"
+          class="form-control"
+          id="reason"
+          placeholder="enter amount"
+        />
+      </div>
+      <div class="g-col-12 text-center offset-1">
+        <button id="btnSubmit" class="btn btn-primary">Submit</button>
+      </div>
     </div>
-
+    <div class="table-responsive">
+      <table class="table table-primary">
+        <thead>
+          <tr>
+            <th scope="col">Bank balance</th>
+            <th scope="col">Money spent</th>
+            <th scope="col">Remaining balance</th>
+          </tr>
+        </thead>
+        <tbody id="divPearagraph">
+          <!-- <tr class="">
+            <td scope="row">R1C1</td>
+            <td>R1C2</td>
+            <td>R1C3</td>
+          </tr>
+          <tr class="">
+            <td scope="row">Item</td>
+            <td>Item</td>
+            <td>Item</td>
+          </tr> -->
+        </tbody>
+      </table>
+    </div>
 
     <div class="table-responsive">
       <table class="table table-primary">
         <thead>
           <tr>
-            <th scope="col">Column 1</th>
-            <th scope="col">Column 2</th>
-            <th scope="col">Column 3</th>
+            <th scope="col">ID</th>
+            <th scope="col">Bank Name</th>
+            <th scope="col">Amount</th>
           </tr>
         </thead>
         <tbody id="divBank">
@@ -109,6 +158,7 @@
       $(document).ready(function () {
         BindStudents();
         BindAccounts();
+        balance();
       });
 
       $('#btnSubmit').click(function () {
@@ -116,12 +166,12 @@
         let firstName = $('#amount').val();
         let lastName = $('#reason').val();
         // let DobValue = $('#txtDOB').val();
-        const csrfToken = "{{ csrf_token }}";
+        const csrfToken = '{{ csrf_token }}';
 
         $.ajax({
           type: 'POST',
           dataType: 'json',
-          headers:{'X-CSRFToken': csrfToken,},
+          headers: { 'X-CSRFToken': csrfToken },
           data: {
             id: idValue,
             buy: firstName,
@@ -204,6 +254,29 @@
             }
 
             $('#divBank').html(structureDiv);
+          },
+        });
+      }
+      function balance() {
+        $.ajax({
+          type: 'GET',
+          dataType: 'json',
+          url: 'http://127.0.0.1:8000/bankbalance/',
+          success: function (result) {
+            console.log(result);
+            var strctureParagra =
+              '<tr>' +
+              '     <td>' +
+              result.total_amount +
+              '</td>' +
+              '      <td>' +
+              result.amount_spend +
+              '</td>' +
+              '             <td>' +
+              result.amount_left +
+              '</td>' +
+              '           </tr>';
+            $('#divPearagraph').html(strctureParagra);
           },
         });
       }
